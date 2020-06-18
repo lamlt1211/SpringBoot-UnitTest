@@ -29,20 +29,21 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    private static final String SUCCESS = "Success";
+
     /**
-     *
      * @return
      * @throws NotFoundException
      */
     @GetMapping("/getAll")
     public ResponseEntity<ProductDTO> getAllProduct() throws NotFoundException {
         List<ProductDTO> productDTOS = productService.getAllProduct();
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), "Success", productDTOS), HttpStatus.OK);
+        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productDTOS), HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable Long id) throws NotFoundException {
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), "Success", productService.getById(id)), HttpStatus.OK);
+        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.getById(id)), HttpStatus.OK);
     }
 
     /**
@@ -54,7 +55,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) {
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), "Success", productService.create(productDTO)), HttpStatus.OK);
+        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.create(productDTO)), HttpStatus.OK);
     }
 
     /**
@@ -66,11 +67,10 @@ public class ProductController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO productDTO) throws NotFoundException {
-        return new ResponseEntity(new APIResponse(HttpStatus.OK.value(), "Success", productService.update(id, productDTO)), HttpStatus.OK);
+        return new ResponseEntity(new APIResponse(HttpStatus.OK.value(), SUCCESS, productService.update(id, productDTO)), HttpStatus.OK);
     }
 
     /**
-     *
      * @param id
      * @return
      * @throws NotFoundException

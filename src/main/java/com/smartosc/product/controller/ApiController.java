@@ -4,6 +4,7 @@ import com.smartosc.product.dto.UserDTO;
 import com.smartosc.product.entity.APIResponse;
 import com.smartosc.product.repository.RestTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,16 +26,21 @@ public class ApiController {
     @Autowired
     private RestTemplateService restTemplateService;
 
+    @Value("${service.hostname}")
+    private String hostname;
+
+    @Value("${service.userApi}")
+    private String userApi;
+
     @PostMapping
     public ResponseEntity<String> authenticate(@RequestBody UserDTO userDTO) {
-        String url = "http://localhost:8001/api/v1/users/authenticate";
-        APIResponse apiResponse = new APIResponse();
+        String url = hostname.concat(userApi).concat("/authenticate");
         return ResponseEntity.ok(restTemplateService.getToken(url, HttpMethod.POST, null, userDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<UserDTO> delete(@PathVariable("id") Long id) {
-        String url = "http://localhost:8001/api/v1/users/delete/" + id;
+        String url = hostname.concat(userApi).concat("/delete") + id;
 
         ParameterizedTypeReference<APIResponse<UserDTO>> responseParameterizedTypeReference = new ParameterizedTypeReference<APIResponse<UserDTO>>() {
         };
@@ -46,19 +52,17 @@ public class ApiController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
-        String url = "http://localhost:8001/api/v1/users/register ";
+        String url = hostname.concat(userApi).concat("/register");
         ParameterizedTypeReference<APIResponse<UserDTO>> responseParameterizedTypeReference = new ParameterizedTypeReference<APIResponse<UserDTO>>() {
         };
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth("");
-
         return ResponseEntity.ok(restTemplateService.getSomething(url, HttpMethod.POST, headers, userDTO, responseParameterizedTypeReference));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
-        String url = "http://localhost:8001/api/v1/users/update/" + id;
-
+        String url = hostname.concat(userApi).concat("/update") + id;
         ParameterizedTypeReference<APIResponse<UserDTO>> responseParameterizedTypeReference = new ParameterizedTypeReference<APIResponse<UserDTO>>() {
         };
         HttpHeaders headers = new HttpHeaders();

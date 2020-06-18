@@ -23,5 +23,5 @@ public interface ProductService {
     ProductDTO getById(Long id) throws NotFoundException;
 
     ProductDTO update(Long id, ProductDTO productDTO) throws NotFoundException;
-
+    
 }

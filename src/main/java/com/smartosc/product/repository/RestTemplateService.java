@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class RestTemplateService {
-    private static final Logger LOOGER = LoggerFactory.getLogger(RestTemplate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestTemplate.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,8 +30,8 @@ public class RestTemplateService {
         if (res.getStatusCodeValue() >= HttpStatus.OK.value() && res.getStatusCodeValue() < HttpStatus.MULTIPLE_CHOICES.value()) {
             return res.getBody().getData();
         }
-        LOOGER.error(res.getBody().getMessage());
-        throw new RuntimeException(res.getBody().getMessage());
+        LOGGER.error(res.getBody().getMessage());
+        throw new IllegalArgumentException(res.getBody().getMessage());
     }
 
     public String getToken(String url, HttpMethod method, HttpHeaders headers, Object body) {
@@ -40,6 +40,6 @@ public class RestTemplateService {
         if (res.getStatusCodeValue() >= HttpStatus.OK.value() && res.getStatusCodeValue() < HttpStatus.MULTIPLE_CHOICES.value()) {
             return res.getBody();
         }
-        throw new RuntimeException(res.getBody());
+        throw new IllegalArgumentException(res.getBody());
     }
 }

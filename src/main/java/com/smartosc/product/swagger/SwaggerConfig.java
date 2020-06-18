@@ -29,11 +29,11 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String restAPI = "/api";
+    private static final String REST_API = "/api";
 
     @Bean
     public Docket api() {
-        ApiInfo restAPIInfo = buildApiInfo(restAPI);
+        ApiInfo restAPIInfo = buildApiInfo(REST_API);
 
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
@@ -43,7 +43,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.smartosc.product.controller"))
-                .paths(regex(".*" + restAPI + ".*"))
+                .paths(regex(".*" + REST_API + ".*"))
                 .build()
                 .apiInfo(restAPIInfo).globalOperationParameters(aParameters);
     }

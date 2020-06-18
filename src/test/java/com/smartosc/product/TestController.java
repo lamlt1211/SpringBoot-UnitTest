@@ -94,4 +94,15 @@ public class TestController {
                 .content(objectMapper.writeValueAsBytes(productDTO)))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void getById() throws Exception {
+        lenient().when(productService.getById(any())).thenReturn(productDTO);
+        this.mockMvc.perform(get(url + "/getById/{id}", productDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.name", is(productDTO.getName())));
+    }
 }
+
