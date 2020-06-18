@@ -64,8 +64,8 @@ class TestService {
 
     @Test
     void getAllProductFail() {
-        when(productRepository.findAll()).thenReturn(null);
-        Assertions.assertThrows(NullPointerException.class, () -> {
+        when(productRepository.findAll()).thenReturn(List.of());
+        Assertions.assertThrows(NotFoundException.class, () -> {
             productService.getAllProduct();
         });
     }
@@ -117,6 +117,20 @@ class TestService {
         lenient().when(productRepository.findById(productDTO.getId())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () -> {
             productService.update(productDTO.getId(), productDTO);
+        });
+    }
+
+    @Test
+    void delete() throws NotFoundException {
+        lenient().when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        productService.delete(1L);
+    }
+
+    @Test
+    void deleteFail() throws NotFoundException {
+        lenient().when(productRepository.findById(any())).thenReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            productService.delete(9786877L);
         });
     }
 }

@@ -34,12 +34,11 @@ public class LoggingAspect {
 
     @Pointcut("within(com.smartosc.product..*)")
     public void service() {
-    }
 
+    }
     @Around("service()")
     public Object aroundServiceMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object result = proceedingJoinPoint.proceed();
-        return result;
+        return proceedingJoinPoint.proceed();
     }
 
     @AfterThrowing(pointcut = "service()", throwing = "ex")
