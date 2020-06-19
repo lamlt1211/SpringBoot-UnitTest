@@ -32,18 +32,19 @@ public class ProductController {
     private static final String SUCCESS = "Success";
 
     /**
+     *
      * @return
      * @throws NotFoundException
      */
     @GetMapping("/getAll")
-    public ResponseEntity<ProductDTO> getAllProduct() throws NotFoundException {
+    public ResponseEntity<APIResponse<List<ProductDTO>>> getAllProduct() throws NotFoundException {
         List<ProductDTO> productDTOS = productService.getAllProduct();
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productDTOS), HttpStatus.OK);
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productDTOS), HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<ProductDTO> getById(@PathVariable Long id) throws NotFoundException {
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.getById(id)), HttpStatus.OK);
+    public ResponseEntity<APIResponse<ProductDTO>> getById(@PathVariable Long id) throws NotFoundException {
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.getById(id)), HttpStatus.OK);
     }
 
     /**
@@ -54,8 +55,8 @@ public class ProductController {
      */
 
     @PostMapping("/create")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) {
-        return new ResponseEntity(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.create(productDTO)), HttpStatus.OK);
+    public ResponseEntity<APIResponse<ProductDTO>> createProduct(@RequestBody @Valid ProductDTO productDTO) {
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.create(productDTO)), HttpStatus.OK);
     }
 
     /**
@@ -66,8 +67,8 @@ public class ProductController {
      */
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO productDTO) throws NotFoundException {
-        return new ResponseEntity(new APIResponse(HttpStatus.OK.value(), SUCCESS, productService.update(id, productDTO)), HttpStatus.OK);
+    public ResponseEntity<APIResponse<ProductDTO>> update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO productDTO) throws NotFoundException {
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.update(id, productDTO)), HttpStatus.OK);
     }
 
     /**
@@ -77,7 +78,7 @@ public class ProductController {
      */
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ProductDTO> delete(@PathVariable Long id) throws NotFoundException {
+    public ResponseEntity<APIResponse<ProductDTO>> delete(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

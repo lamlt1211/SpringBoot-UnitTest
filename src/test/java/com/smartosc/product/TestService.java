@@ -19,6 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ class TestService {
 
     @Test
     void getAllProductFail() {
-        when(productRepository.findAll()).thenReturn(List.of());
+        when(productRepository.findAll()).thenReturn(Collections.emptyList());
         Assertions.assertThrows(NotFoundException.class, () -> {
             productService.getAllProduct();
         });
@@ -86,7 +87,7 @@ class TestService {
     }
 
     @Test
-    void createSuccess() throws NotFoundException {
+    void createSuccess() {
         lenient().when(modelMapper.map(any(), any())).thenReturn(product).thenReturn(productDTO);
         lenient().when(productRepository.save(any(Product.class))).thenReturn(product);
 
@@ -127,7 +128,7 @@ class TestService {
     }
 
     @Test
-    void deleteFail() throws NotFoundException {
+    void deleteFail()  {
         lenient().when(productRepository.findById(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () -> {
             productService.delete(9786877L);

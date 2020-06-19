@@ -34,6 +34,7 @@ public class LoggingAspect {
 
     @Pointcut("within(com.smartosc.product..*)")
     public void service() {
+        // TODO: 6/18/2020
 
     }
     @Around("service()")

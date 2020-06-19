@@ -38,8 +38,6 @@ public class SwaggerConfig {
     public Docket api() {
         ApiInfo restAPIInfo = buildApiInfo(REST_API);
 
-        List<ResponseMessage> responseMessages = buildGlobalResponses();
-
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
         List<Parameter> aParameters = new ArrayList<>();
