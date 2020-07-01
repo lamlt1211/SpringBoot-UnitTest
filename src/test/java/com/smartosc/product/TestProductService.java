@@ -1,6 +1,8 @@
 package com.smartosc.product;
 
+import com.smartosc.product.dto.CategoryDTO;
 import com.smartosc.product.dto.ProductDTO;
+import com.smartosc.product.entity.Category;
 import com.smartosc.product.entity.Product;
 import com.smartosc.product.repository.ProductRepository;
 import com.smartosc.product.service.ProductService;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
@@ -25,10 +26,9 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TestService {
+class TestProductService {
     @Mock
     private ProductRepository productRepository;
 
@@ -42,16 +42,24 @@ class TestService {
     private ProductDTO productDTO;
     private List<Product> productList;
     private List<ProductDTO> productDTOList;
+    private List<CategoryDTO> categoryDTOS;
+    private List<Category> categories;
+    private Category category;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        categoryDTOS = new ArrayList<>();
 
-        product = new Product(1L, "3", new BigDecimal(4), "6");
+        category = new Category(1L, "category", "emak");
+        categories = new ArrayList<>();
+        categories.add(category);
+
+
+        product = new Product(1L, "3", new BigDecimal(4), "6", categories);
         productList = new ArrayList<>();
         productList.add(product);
 
-        productDTO = new ProductDTO(1L, "3", new BigDecimal(4), "6");
+        productDTO = new ProductDTO(1L, "3", new BigDecimal(4), "6", categoryDTOS);
         productDTOList = new ArrayList<>();
         productDTOList.add(productDTO);
     }
@@ -65,7 +73,7 @@ class TestService {
 
     @Test
     void getAllProductFail() {
-        when(productRepository.findAll()).thenReturn(Collections.emptyList());
+        lenient().when(productRepository.findAll()).thenReturn(Collections.emptyList());
         Assertions.assertThrows(NotFoundException.class, () -> {
             productService.getAllProduct();
         });
@@ -91,7 +99,7 @@ class TestService {
         lenient().when(modelMapper.map(any(), any())).thenReturn(product).thenReturn(productDTO);
         lenient().when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        ProductDTO productDTO1 = productService.create(productDTO);
+        ProductDTO productDTO1 = productService.createProduct(productDTO);
         Assertions.assertEquals(productDTO1, productDTO);
     }
 
@@ -99,39 +107,39 @@ class TestService {
     void createFail() {
         lenient().when(productRepository.findByName(productDTO.getName())).thenReturn(product);
         Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            productService.create(productDTO);
+            productService.createProduct(productDTO);
         });
     }
 
     @Test
     void updateSuccess() throws NotFoundException {
-        lenient().when(productRepository.findById(productDTO.getId())).thenReturn(java.util.Optional.ofNullable(product));
-        lenient().when(modelMapper.map(any(), any())).thenReturn(productDTO);
+        lenient().when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        lenient().when(modelMapper.map(any(), any())).thenReturn(product);
         lenient().when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        ProductDTO productDTO1 = productService.update(productDTO.getId(), productDTO);
-        Assertions.assertEquals(productDTO1, productDTO);
+        ProductDTO productDT = productService.updateProduct(this.productDTO);
+        Assertions.assertEquals(productDT.getName(), product.getName());
     }
 
     @Test
     void updateFail() {
         lenient().when(productRepository.findById(productDTO.getId())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () -> {
-            productService.update(productDTO.getId(), productDTO);
+            productService.updateProduct(productDTO);
         });
     }
 
     @Test
     void delete() throws NotFoundException {
         lenient().when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        productService.delete(1L);
+        productService.deleteProduct(1L);
     }
 
     @Test
-    void deleteFail()  {
+    void deleteFail() {
         lenient().when(productRepository.findById(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () -> {
-            productService.delete(9786877L);
+            productService.deleteProduct(9786877L);
         });
     }
 }

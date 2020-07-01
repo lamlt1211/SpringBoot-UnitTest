@@ -32,17 +32,16 @@ public class ProductController {
     private static final String SUCCESS = "Success";
 
     /**
-     *
      * @return
      * @throws NotFoundException
      */
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<APIResponse<List<ProductDTO>>> getAllProduct() throws NotFoundException {
         List<ProductDTO> productDTOS = productService.getAllProduct();
         return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productDTOS), HttpStatus.OK);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<ProductDTO>> getById(@PathVariable Long id) throws NotFoundException {
         return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.getById(id)), HttpStatus.OK);
     }
@@ -54,21 +53,20 @@ public class ProductController {
      * @throws NoHandlerFoundException
      */
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<APIResponse<ProductDTO>> createProduct(@RequestBody @Valid ProductDTO productDTO) {
-        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.create(productDTO)), HttpStatus.OK);
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.createProduct(productDTO)), HttpStatus.OK);
     }
 
     /**
-     * @param id
      * @param productDTO
      * @return
      * @throws NotFoundException
      */
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<APIResponse<ProductDTO>> update(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO productDTO) throws NotFoundException {
-        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.update(id, productDTO)), HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<APIResponse<ProductDTO>> update(@RequestBody @Valid ProductDTO productDTO) throws NotFoundException {
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), SUCCESS, productService.updateProduct(productDTO)), HttpStatus.OK);
     }
 
     /**
@@ -77,10 +75,10 @@ public class ProductController {
      * @throws NotFoundException
      */
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<ProductDTO>> delete(@PathVariable Long id) throws NotFoundException {
-        productService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), "xoa thanh cong roi em oi"), HttpStatus.OK);
     }
 
 }

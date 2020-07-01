@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 
 /**
@@ -34,4 +35,12 @@ public class ProductDTO {
     @ContactDescriptionConstraint
     private String description;
 
+    private List<CategoryDTO> categories;
+
+    public ProductDTO(Long id, String name, @NotNull(message = "Please provide a price") @DecimalMin(value = "1.00", message = "value must be more 1.00") BigDecimal price, String description) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
 }

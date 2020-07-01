@@ -16,12 +16,12 @@ import java.util.List;
 public interface ProductService {
     List<ProductDTO> getAllProduct() throws NotFoundException;
 
-    ProductDTO create(ProductDTO productDTO);
+    ProductDTO createProduct(ProductDTO productDTO);
 
-    void delete(Long id) throws NotFoundException;
+    Boolean deleteProduct(Long id) throws NotFoundException;
 
     ProductDTO getById(Long id) throws NotFoundException;
 
-    ProductDTO update(Long id, ProductDTO productDTO) throws NotFoundException;
-    
+    ProductDTO updateProduct(ProductDTO productDTO) throws NotFoundException;
+
 }

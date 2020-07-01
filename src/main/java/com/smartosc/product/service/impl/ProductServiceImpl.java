@@ -1,5 +1,6 @@
 package com.smartosc.product.service.impl;
 
+import com.smartosc.product.convert.ProductConvert;
 import com.smartosc.product.dto.ProductDTO;
 import com.smartosc.product.entity.Product;
 import com.smartosc.product.repository.ProductRepository;
@@ -41,64 +42,57 @@ public class ProductServiceImpl implements ProductService {
         }
         List<ProductDTO> productDTOs = new ArrayList<>();
         for (Product pro : products) {
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.setId(pro.getId());
-            productDTO.setDescription(pro.getDescription());
-            productDTO.setName(pro.getName());
-            productDTO.setPrice(pro.getPrice());
+            ProductDTO productDTO = ProductConvert.EntityToDTO(pro);
             productDTOs.add(productDTO);
         }
         return productDTOs;
     }
 
     @Override
-    public ProductDTO create(ProductDTO productDTO) {
+    public ProductDTO createProduct(ProductDTO productDTO) {
         Product product1 = productRepository.findByName(productDTO.getName());
         if (product1 != null) {
             throw new DuplicateKeyException("Sản phẩm đã tồn tại");
         }
-        Product product = modelMapper.map(productDTO, Product.class);
-        return modelMapper.map(productRepository.save(product), ProductDTO.class);
+
+        Product product = ProductConvert.DTOToEntity(productDTO);
+        try {
+            productRepository.save(product);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return productDTO;
     }
 
     @Override
-    public void delete(Long id) throws NotFoundException {
-
+    public Boolean deleteProduct(Long id) throws NotFoundException {
         if (productRepository.findById(id).isPresent()) {
             productRepository.deleteById(id);
+            return true;
         } else {
             throw new NotFoundException("Can't find product with id: " + id);
         }
-
     }
 
     @Override
     public ProductDTO getById(Long id) throws NotFoundException {
         Optional<Product> productEntity = productRepository.findById(id);
-        ProductDTO productDTO = new ProductDTO();
+        ProductDTO productDTO;
         if (productEntity.isPresent()) {
-            Product products = productEntity.get();
-            productDTO.setDescription(products.getDescription());
-            productDTO.setId(products.getId());
-            productDTO.setName(products.getName());
-            productDTO.setPrice(products.getPrice());
+            productDTO = ProductConvert.EntityToDTO(productEntity.get());
             return productDTO;
         } else {
             throw new NotFoundException("Id: " + id + " isn't exist");
         }
-
     }
 
     @Override
-    public ProductDTO update(Long id, ProductDTO productDTO) throws NotFoundException {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+    public ProductDTO updateProduct(ProductDTO productDTO) throws NotFoundException {
+        Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
         if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setId(id);
-            product.setName(productDTO.getName());
-            product.setPrice(productDTO.getPrice());
-            product.setDescription(productDTO.getDescription());
-            return modelMapper.map(productRepository.save(product), ProductDTO.class);
+            Product product = modelMapper.map(productDTO, Product.class);
+            productRepository.save(product);
+            return productDTO;
         } else {
             throw new NotFoundException("Product not found");
         }
